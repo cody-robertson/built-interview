@@ -1,11 +1,14 @@
 start:
-\tdocker compose up --build -d
+	docker compose up --build -d
 
 stop:
-\tdocker compose down
+	docker compose down
 
 restart:
-\tdocker compose restart
+	docker compose restart
 
 run:
-\tdocker compose run api $(cmd)
+	docker compose run api $(cmd)
+
+format:
+	docker compose run api black .

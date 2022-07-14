@@ -4,10 +4,12 @@ services:
   db:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=default
     ports:
       - "3306:3306"
     volumes:
+      - ./data:/var/lib/mysql
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
@@ -24,7 +26,7 @@ services:
       - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY-}  # only required for Pro
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./localstack_data}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
   api:
     build: api
@@ -33,7 +35,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MYSQL_NAME=db
+      - MYSQL_HOST=db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_DB=default
