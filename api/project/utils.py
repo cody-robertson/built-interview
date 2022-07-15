@@ -8,4 +8,4 @@ def get_db_uri():
     MYSQL_USER = os.environ.get("MYSQL_USER", "")
     MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "")
 
-    return f"mysql+mysqldb://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}"
+    return f"mysql+mysqldb://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"

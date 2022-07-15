@@ -19,7 +19,7 @@ class BudgetAmount(db.Model):
     amount = db.Column(db.Numeric(precision=15, scale=2, asdecimal=True))
     category_id = db.Column(db.Integer, db.ForeignKey("budget_category.id"))
     category = db.relationship(
-        "budget_category", backref=db.backref("budget_amounts", lazy=True)
+        "BudgetCategory", backref=db.backref("budget_amounts", lazy=True)
     )
 
 
@@ -28,5 +28,5 @@ class BudgetItem(db.Model):
     value = db.Column(db.Numeric(precision=15, scale=2, asdecimal=True))
     category_id = db.Column(db.Integer, db.ForeignKey("budget_category.id"))
     category = db.relationship(
-        "budget_category", backref=db.backref("budget_items", lazy=True)
+        "BudgetCategory", backref=db.backref("budget_items", lazy=True)
     )
