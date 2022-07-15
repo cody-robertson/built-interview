@@ -1,30 +1,61 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from project import get_db_uri
+from project import get_db_uri, BudgetCategory, BudgetItem
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = get_db_uri()
 db = SQLAlchemy(app)
 
 
-@app.route("/budget-categories/", methods=["GET", "POST"])
+@app.get("/budget-categories/")
 def list_categories():
     pass
 
 
-@app.route("/budget-categories/:category_id", methods=["GET", "POST", "DELETE"])
-def get_category(category_id: str):
+@app.post("/budget-categories/")
+def add_category():
     pass
 
 
-@app.route("/budget-items/", methods=["GET", "POST"])
+@app.get("/budget-categories/<int:category_id>/")
+def get_category(category_id: str):
+    category_id = escape(category_id)
+
+
+@app.put("/budget-categories/<int:category_id>/")
+def update_category(category_id: str):
+    category_id = escape(category_id)
+
+
+@app.delete("/budget-categories/<int:category_id>/")
+def delete_category(category_id: str):
+    category_id = escape(category_id)
+
+
+@app.get("/budget-items/")
 def list_budget_items():
     pass
 
 
-@app.route("/budget-items/:item_id", methods=["GET", "POST", "DELETE"])
-def get_item(item_id: str):
+@app.post("/budget-items/")
+def add_budget_item():
     pass
+
+
+@app.get("/budget-items/<int:item_id>/")
+def get_item(item_id: str):
+    item_id = escape(item_id)
+
+
+@app.post("/budget-items/<int:item_id>/")
+def get_item(item_id: str):
+    item_id = escape(item_id)
+
+
+@app.delete("/budget-items/<int:item_id>/")
+def get_item(item_id: str):
+    item_id = escape(item_id)
 
 
 if __name__ == "__main__":
