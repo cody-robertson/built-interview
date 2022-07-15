@@ -89,25 +89,51 @@ def list_budget_items():
 @app.post("/budget-items/")
 @handle_error
 def add_budget_item():
-    pass
+    result = item_schema.load(request.get_json())
+    db.session.add(result)
+    db.session.commit()
+    return item_schema.dump(result)
 
 
 @app.get("/budget-items/<int:item_id>/")
 @handle_error
 def get_item(item_id: str):
     item_id = escape(item_id)
+    items = db.session.query(BudgetItem).filter_by(id=item_id).all()
+
+    if not len(items) == 1:
+        return "", 404
+
+    return item_schema.dump(items[0])
 
 
-@app.post("/budget-items/<int:item_id>/")
+@app.put("/budget-items/<int:item_id>/")
 @handle_error
 def update_item(item_id: str):
     item_id = escape(item_id)
+    items = db.session.query(BudgetItem).filter_by(id=item_id).all()
+
+    if not len(items) == 1:
+        return "", 404
+
+    validated_data = item_schema.load(request.get_json())
+    item = items[0]
+    item.value = validated_data.value
+    item.category_id = validated_data.category_id
+    db.session.commit()
+
+    return item_schema.dump(item)
 
 
 @app.delete("/budget-items/<int:item_id>/")
 @handle_error
 def delete_item(item_id: str):
     item_id = escape(item_id)
+    item = db.session.query(BudgetItem).filter(BudgetItem.id == item_id).first()
+
+    db.session.delete(item)
+    db.session.commit()
+    return "", 200
 
 
 category_schema = CategorySchema()
