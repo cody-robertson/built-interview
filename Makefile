@@ -12,3 +12,12 @@ run:
 
 format:
 	docker compose run api black .
+
+migrate:
+	docker compose run api alembic upgrade head
+
+revert-migrations:
+	docker compose run api alembic downgrade base
+
+makemigrations:
+	docker compose run api alembic revision --autogenerate -m "$(msg)"
