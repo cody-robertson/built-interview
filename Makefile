@@ -21,3 +21,6 @@ revert-migrations:
 
 makemigrations:
 	docker compose run api alembic revision --autogenerate -m "$(msg)"
+
+init_kinesis:
+	docker exec localstack_main awslocal kinesis create-stream --stream-name samplestream --shard-count 1

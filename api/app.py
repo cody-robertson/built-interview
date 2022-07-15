@@ -3,11 +3,30 @@ from flask_sqlalchemy import SQLAlchemy
 from project import get_db_uri, BudgetCategory, BudgetItem, CategorySchema, ItemSchema
 from markupsafe import escape
 from functools import wraps
+import boto3
+from botocore.config import Config
+
+boto_config = Config(
+    region_name='us-east-1',
+    signature_version='v4',
+    retries={
+        'max_attempts': 10,
+        'mode': 'standard'
+    }
+)
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = get_db_uri()
 db = SQLAlchemy(app)
 logger = logging.create_logger(app)
+
+endpoint_url = "http://localstack:4566"
+kinesis = boto3.client("kinesis", endpoint_url=endpoint_url,
+    aws_access_key_id="ACCESS_KEY",
+    aws_secret_access_key="SECRET_KEY",
+    aws_session_token="SESSION_TOKEN",
+    config=boto_config
+)
 
 
 def handle_error(fun):
@@ -19,6 +38,13 @@ def handle_error(fun):
             logger.exception("Error in inner function")
             return str(e), 500
     return inner
+
+
+@app.get('/')
+@handle_error
+def kinesis_test():
+    response = kinesis.list_streams(Limit=123)
+    return jsonify(response)
 
 
 @app.get("/budget-categories/")
